@@ -99,10 +99,13 @@ int main()
     JNI_OnLoad(&jvm);
 
     Game_isTestingMode();
-    Cocos2dx_nativeSetPaths(&jni, NULL, jni->NewStringUTF(&jni, "ux0:/data/hcr/base.apk"));
+    jstring apk_path = jni->NewStringUTF(&jni, "ux0:/data/hcr/base.apk");
+    Cocos2dx_nativeSetPaths(&jni, NULL, apk_path);
+    jni->DeleteLocalRef(&jni, apk_path);
     Game_nativeInit(&jni, NULL, SCREEN_WIDTH, SCREEN_HEIGHT);
     Game_nativeResize(&jni, NULL, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+    // Context recreation belongs to initialization, never the per-frame render loop.
     while (1)
     {
         controls_poll();
